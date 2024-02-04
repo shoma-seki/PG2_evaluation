@@ -18,9 +18,6 @@ void Game::Initialize() {
 void Game::Update() {
 	cnt_++;
 
-	memcpy(preKeys, keys, 256);
-	Novice::GetHitKeyStateAll(keys);
-
 	shake_->Update(isStop_);
 
 	isStop_ = enemy_->GetStop();

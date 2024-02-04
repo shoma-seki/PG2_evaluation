@@ -8,9 +8,6 @@
 
 class Game:public BaseScene{
 private:
-	char keys[256] = { 0 };
-	char preKeys[256] = { 0 };
-
 	Player* player_;
 	EnemyManager* enemy_;
 	Shake* shake_;

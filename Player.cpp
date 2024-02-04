@@ -25,7 +25,39 @@ void Player::Initialize() {
 }
 
 void Player::Update() {
+	memcpy(preKeys, keys, 256);
+	Novice::GetHitKeyStateAll(keys);
 	Novice::GetMousePosition(&mouX, &mouY);
+
+	if (keys[DIK_W] || keys[DIK_UP]) {
+		direction_.vector2[1] = -1;
+		speed_ = 1;
+	}
+	if (keys[DIK_S] || keys[DIK_DOWN]) {
+		direction_.vector2[1] = 1;
+		speed_ = 1;
+	}
+	if (keys[DIK_A] || keys[DIK_LEFT]) {
+		direction_.vector2[0] = -1;
+		speed_ = 1;
+	}
+	if (keys[DIK_D] || keys[DIK_RIGHT]) {
+		direction_.vector2[0] = 1;
+		speed_ = 1;
+	}
+
+	if (Novice::IsTriggerMouse(0)) {
+		if (speed_ < 10) {
+			speed_ += 2;
+		}
+		direction_.vector2[0] = Normalize(float(mouX), float(mouY), 640.0f, 320.0f, 1);
+		direction_.vector2[1] = Normalize(float(mouX), float(mouY), 640.0f, 320.0f, 2);
+		isEase = true;
+
+		obj_.theta = std::atan2f(-direction_.vector2[0], direction_.vector2[1]);
+
+		bulletM_->ShotBullet(obj_.translate, direction_, obj_.theta);
+	}
 
 	if (speed_ > 0.1f) {
 		speed_ -= 0.1f;
@@ -61,19 +93,6 @@ void Player::Update() {
 	obj_.rb = { obj_.size.vector2[0] / 2.0f,obj_.size.vector2[1] / 2.0f, };
 
 	LocalToScreen(obj_);
-
-	if (Novice::IsTriggerMouse(0)) {
-		if (speed_ < 10) {
-			speed_ += 2;
-		}
-		direction_.vector2[0] = Normalize(float(mouX), float(mouY), 640.0f, 320.0f, 1);
-		direction_.vector2[1] = Normalize(float(mouX), float(mouY), 640.0f, 320.0f, 2);
-		isEase = true;
-
-		obj_.theta = std::atan2f(-direction_.vector2[0], direction_.vector2[1]);
-
-		bulletM_->ShotBullet(obj_.translate, direction_, obj_.theta);
-	}
 
 	bulletM_->Update();
 
